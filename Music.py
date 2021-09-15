@@ -540,8 +540,8 @@ async def 메세지리스트(ctx):
 @bot.command()
 async def 로또(ctx, number=1):
     for i in range(number):
-        lotto = random.sample(range(1,46),7)
-        await ctx.send(f'```{lotto[0:6]} + {lotto[6]}```')
+        lotto = random.sample(range(1,46),6)
+        await ctx.send(f'```{lotto}```')
 
 @bot.event
 async def on_message(msg):

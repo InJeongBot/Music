@@ -18,7 +18,6 @@ import os
 
 import random
 
-
 command_prefix = '.'
 bot = commands.Bot(command_prefix = command_prefix)
 client = discord.Client()
@@ -71,10 +70,10 @@ async def on_ready():
     print(bot.user.name)
     print('TOKEN =', TOKEN)
     print('Successly access')
-
+'''
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
-
+'''
 
         
 
@@ -439,18 +438,21 @@ async def musicchannel(ctx, chname, msg):
         await music_msg.add_reaction(n)
 
 
-    while True:
-        try:
-            embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
-            embed_music.set_image(url=music_thumbnail[0])
-            await music_msg.edit(embed=embed_music)
-                
-        except:
-            if not vc.is_playing():
-                embed_music_f = discord.Embed(title='인정 Music', description='')
-                embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
-                await music_msg.edit(embed=embed_music_f)
+@bot.command(pass_context = True)
+async def musicmessage(ctx):
+    global music_msg
 
+    embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
+    embed_music.set_image(url=music_thumbnail[0])
+    await music_msg.edit(embed=embed_music)
+        
+
+    if not vc.is_playing():
+        embed_music_f = discord.Embed(title='인정 Music', description='')
+        embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
+        await music_msg.edit(embed=embed_music_f)
+
+    
 '''
 # 봇 전용 음악 채널 버튼 만들기
 @bot.command()
@@ -566,19 +568,11 @@ async def on_message(msg):
     if msg.content[:1] == command_prefix:
         await bot.process_commands(msg)
 
-
- 
-    if topic != None and '#인정_Music' in topic:
-        await play(bot, msg=msg.content)
-        await msg.delete()
-        
-        try:
-            embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
-            embed_music.set_image(url=music_thumbnail[0])
-            await music_msg.send(embed=embed_music)
-                
-        except:
-            pass
+    else:
+        if topic != None and '#인정_Music' in topic:
+            await play(bot, msg=msg.content)
+            await msg.delete()
+            await musicmessage(bot)
 
 
 TOKEN = os.environ['BOT_TOKEN']

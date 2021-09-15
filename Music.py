@@ -262,7 +262,10 @@ async def play(ctx, *, msg):
         result, URLTEST = f_music_title(msg)
         music_queue.append(URLTEST)
         
-        await queue(ctx)
+        try:
+            await queue(ctx)
+        except:
+            pass
 
     try:
         embed = discord.Embed(title = entireText, description = "")

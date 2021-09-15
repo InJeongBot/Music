@@ -197,7 +197,10 @@ def load_chrome_driver():
 async def 도움말(ctx):
     embed = discord.Embed(title = "인정봇", description = "")
     embed.set_author(name = "ㅇㅈ#6079", icon_url = 'https://cdn.discordapp.com/avatars/270403684389748736/621692a4dddbf42dd2b01df1301eebe6.png')
-    embed.add_field(name = "명령어", value = "/join /leave /play (노래제목) /n (검색어) /g (검색어) \n/queuedel (숫자) /queue /queueclear \n/musicinfo /pause /resume /skip /stop \n/musicchannel /music_ch_video /music_ch_queue", inline = False)
+    embed.add_field(name = "명령어", value = ".join .leave .play (노래제목) .queuedel (숫자) .queue .queueclear \n"
+                                            + ".musicinfo .pause .resume .skip .stop .음악메세지생성 .musicmessage \n"
+                                            + ".메세지생성 (명령어) (메세지) .메세지삭제 (명령어) .메세지리스트 \n"
+                                            + ".타겟메세지생성 (@호출) (명령어) (메세지) .타겟메세지삭제 (명령어) .타겟메세지리스트", inline = False)
     await ctx.send(embed=embed)
 
 
@@ -342,24 +345,6 @@ async def queueclear(ctx):
         await ctx.send("노래를 등록해주세요")
 
 
-# Command /목록재생
-@bot.command()
-async def 목록재생(ctx):
-
-    YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
-    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-    
-    if len(user) == 0:
-        await ctx.send("노래를 등록해주세요")
-    else:
-        if len(music_now) - len(music_user) >= 1:
-            for i in range(len(music_now) - len(music_user)):
-                del music_now[0]
-        if not vc.is_playing():
-            music_play(ctx)
-        else:
-            await ctx.send("노래가 이미 재생되고 있어요!")
-
             
 # Command /musicinfo
 @bot.command()
@@ -428,26 +413,13 @@ async def stop(ctx):
 
 # 봇 전용 음악 채널 만들기
 @bot.command(pass_context = True)
-async def musicchannel(ctx, chname, msg):
-    global vc
+async def 음악메세지생성(ctx):
     global music_msg
 
-    category = discord.utils.get(ctx.guild.channels, id=int(msg))
-    channel = await ctx.guild.create_text_channel(name = chname, topic = '#인정_Music')
-
-    all_channels = ctx.guild.text_channels
-
-    InJeongbot_music_ch_id = all_channels[len(all_channels) - 1].id
-    
-    InJeongbot_music_ch = bot.get_channel(InJeongbot_music_ch_id)
-    
-    await channel.edit(category = category)
-    await channel.edit(position = 100)
-    
     embed = discord.Embed(title='인정 Music', description='')
     embed.set_image(url = 'https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
                                    
-    music_msg = await InJeongbot_music_ch.send('노래 목록 \n', embed=embed)
+    music_msg = await ctx.send('노래 목록 \n', embed=embed)
 
     music_reaction_list = ['✅','▶','⏸','⏹','⏭','']
     for n in music_reaction_list:
@@ -537,13 +509,13 @@ async def 타겟메세지생성(ctx, target, msg1, *, msg2):
     dic[msg1] = msg2
     target = target[3:len(target)-1]
     target_dic[int(target)] = dic
-    await ctx.send(f'```타켓: {target}, 명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
+    await ctx.send(f'```타겟: {target}, 명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
 
 @bot.command()
 async def 타겟메세지삭제(ctx, target, msg1):
     target = target[3:len(target)-1]
     del target_dic[int(target)][msg1]
-    await ctx.send(f'```타켓: {target}, 명령어이름: {msg1} 이)가 삭제되었습니다.```')
+    await ctx.send(f'```타겟: {target}, 명령어이름: {msg1} 이)가 삭제되었습니다.```')
 
 @bot.command()
 async def 타겟메세지리스트(ctx, *, msg=True):

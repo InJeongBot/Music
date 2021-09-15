@@ -536,8 +536,8 @@ async def msgadd(ctx, msg1, msg2):
     await ctx.send(f'```명령어이름: {msg1}, 대답: {msg2}이 등록되었습니다.```')
 
 @bot.command()
-async def msgadd(ctx, msg1):
-    talk[msg1]
+async def msgdel(ctx, msg1):
+    del talk[msg1]
     await ctx.send(f'```명령어이름: {msg1} (이)가 삭제되었습니다.```')
 
 @bot.command()

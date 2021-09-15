@@ -213,9 +213,8 @@ async def leave(ctx):
 # Command /play 노래제목
 @bot.command()
 async def play(ctx, *, msg):
-    
+    global vc
     try:
-        global vc
         vc = await ctx.message.author.voice.channel.connect()
     except:
         try:

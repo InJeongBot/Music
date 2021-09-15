@@ -527,7 +527,11 @@ async def on_reaction_add(reaction, user):
 
             
 
+talk = {}
 
+@bot.command()
+async def msgadd(ctx, msg1, msg2):
+    talk[msg1] = msg2
 
 @bot.event
 async def on_message(msg):
@@ -541,6 +545,10 @@ async def on_message(msg):
             await play(bot, msg=msg.content)
             await msg.delete()
             await musicmessage(bot)
+
+        elif topic != None and '#대화' in topic:
+            if msg.content in list(talk.keys()):
+                await msg.channel.send(talk[msg.content])
 
             
 

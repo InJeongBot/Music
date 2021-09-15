@@ -545,7 +545,7 @@ async def msglist(ctx):
 async def on_message(msg):
     topic = msg.channel.topic
 
-    if msg.author.id == 834693850538180618:
+    if msg.author.id == 887582865762689035:
         return None
 
     if msg.content[:1] == command_prefix:

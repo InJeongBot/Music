@@ -469,18 +469,18 @@ async def musicmessage(ctx):
         await music_msg.edit(embed=embed_music_f)
 
     
-'''
+
 # 봇 전용 음악 채널 버튼 만들기
 @bot.command()
-async def on_reaction_add(reaction,user):
+async def on_reaction_add(reaction, user):
 
     if (reaction.emoji == '✅'):
         try:
             global vc
-            vc = await ctx.message.author.voice.channel.connect()
+            vc = await bot.message.author.voice.channel.connect()
         except:
             try:
-                await vc.move_to(ctx.message.author.voice.channel)
+                await vc.move_to(bot.message.author.voice.channel)
             except:
                 pass
 
@@ -525,7 +525,7 @@ async def on_reaction_add(reaction,user):
         if vc.is_playing():
             if len(music_user) >= 1:
                 vc.stop()
-'''
+
 
 # 봇 전용 음악 채널 노래 목록 만들기
 @bot.command(pass_context = True)
@@ -546,37 +546,6 @@ async def music_ch_queue(ctx):
 
 
 
-# 추가 기능
-@bot.command(pass_context = True)
-async def dkssud(ctx, chname, msg):
-    global vc
-
-    category = discord.utils.get(ctx.guild.channels, id=int(msg))
-    channel = await ctx.guild.create_text_channel(name = chname, topic = '#인정_Music')
-
-    all_channels = ctx.guild.text_channels
-
-    idd = all_channels[len(all_channels) - 1].id
-    
-    ch = bot.get_channel(idd)
-    
-    await channel.edit(category = category)
-    await channel.edit(position = 100)
-    
-    embed = discord.Embed(title='인정 Music', description='')
-    embed.set_image(url = 'https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
-                                   
-    dkssud = await ch.send('노래 목록 \n', embed=embed)
-
-    await dkssud.add_reaction('✅')
-    await dkssud.add_reaction('▶')
-    await dkssud.add_reaction('⏸')
-    await dkssud.add_reaction('⏹')
-    await dkssud.add_reaction('⏭')
-
-
-
-
 @bot.event
 async def on_message(msg):
     topic = msg.channel.topic
@@ -589,7 +558,6 @@ async def on_message(msg):
             await play(bot, msg=msg.content)
             await msg.delete()
             await musicmessage(bot)
-
 
 TOKEN = os.environ['BOT_TOKEN']
 bot.run(TOKEN)

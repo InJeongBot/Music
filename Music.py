@@ -74,6 +74,7 @@ async def on_ready():
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
 
+
         
 
 # f_music_title 함수
@@ -450,11 +451,15 @@ async def musicchannel(ctx, chname, msg):
 @bot.command(pass_context = True)
 async def musicmessage(ctx):
     global music_msg
-    global Text
-    Text = ""
+    text = []
     for i in range(len(music_title)):
-        Text = Text + "\n" + str(i + 1) + ". " + str(music_title[i])
-    await music_msg.edit(content="노래 목록" + Text.strip())
+        text.append('' + "\n" + str(i + 1) + ". " + str(music_title[i]))
+    text.reverse()
+    Text = ''
+    for i in range(len(text)):
+        Text = Text + str(text[i])
+
+    await music_msg.edit(content = '노래 목록 \n' + Text.strip())
     
 
     embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
@@ -475,10 +480,10 @@ async def on_reaction_add(reaction, user):
     if (reaction.emoji == '✅'):
         try:
             global vc
-            vc = await bot.message.author.voice.channel.connect()
+            vc = await client.message.author.voice.channel.connect()
         except:
             try:
-                await vc.move_to(bot.message.author.voice.channel)
+                await vc.move_to(client.message.author.voice.channel)
             except:
                 pass
 
@@ -514,16 +519,14 @@ async def on_reaction_add(reaction, user):
                         break
             except:
                 pass
-        try:
-            client.loop.create_task(vc.disconnect())
-        except:
-            pass
+
+            await musicmessage(bot)
 
     if (reaction.emoji == '⏭'):
         if vc.is_playing():
             if len(music_user) >= 1:
                 vc.stop()
-
+            await musicmessage(bot)
             
 
 talk = {}
@@ -531,10 +534,19 @@ talk = {}
 @bot.command()
 async def msgadd(ctx, msg1, msg2):
     talk[msg1] = msg2
+    await ctx.send("정상적으로 등록되었습니다.")
+
+@bot.command()
+async def msglist(ctx):
+    await ctx.send(talk)
+
 
 @bot.event
 async def on_message(msg):
     topic = msg.channel.topic
+
+    if msg.author.id == 834693850538180618:
+        return None
 
     if msg.content[:1] == command_prefix:
         await bot.process_commands(msg)
@@ -548,7 +560,6 @@ async def on_message(msg):
         elif topic != None and '#대화' in topic:
             if msg.content in list(talk.keys()):
                 await msg.channel.send(talk[msg.content])
-
             
 
 TOKEN = os.environ['BOT_TOKEN']

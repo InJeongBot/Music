@@ -444,6 +444,22 @@ async def musicchannel(ctx, chname, msg):
 @bot.command(pass_context = True)
 async def musicmessage(ctx):
     global music_msg
+    global Text
+    Text = ""
+    for i in range(len(music_title)):
+        Text = Text + "\n" + str(i + 1) + ". " + str(music_title[i])
+    await music_msg.edit("노래 목록" + Text.strip())
+    
+
+    embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
+    embed_music.set_image(url=music_thumbnail[0])
+    await music_msg.edit(embed=embed_music)
+        
+
+    if not vc.is_playing():
+        embed_music_f = discord.Embed(title='인정 Music', description='')
+        embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
+        await music_msg.edit(embed=embed_music_f)
 
     embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
     embed_music.set_image(url=music_thumbnail[0])

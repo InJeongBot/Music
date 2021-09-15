@@ -70,10 +70,9 @@ async def on_ready():
     print(bot.user.name)
     print('TOKEN =', TOKEN)
     print('Successly access')
-'''
+
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
-'''
 
         
 
@@ -470,7 +469,7 @@ async def musicmessage(ctx):
 
 
 # 봇 전용 음악 채널 버튼 만들기
-@bot.event()
+@bot.event
 async def on_reaction_add(reaction, user):
 
     if (reaction.emoji == '✅'):

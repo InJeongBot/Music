@@ -70,10 +70,10 @@ async def on_ready():
     print(bot.user.name)
     print('TOKEN =', TOKEN)
     print('Successly access')
-
+'''
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
-
+'''
 
         
 
@@ -468,10 +468,9 @@ async def musicmessage(ctx):
         embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
         await music_msg.edit(embed=embed_music_f)
 
-    
 
 # 봇 전용 음악 채널 버튼 만들기
-@bot.command()
+@bot.event()
 async def on_reaction_add(reaction, user):
 
     if (reaction.emoji == '✅'):
@@ -526,22 +525,6 @@ async def on_reaction_add(reaction, user):
             if len(music_user) >= 1:
                 vc.stop()
 
-
-# 봇 전용 음악 채널 노래 목록 만들기
-@bot.command(pass_context = True)
-async def music_ch_queue(ctx):
-    while True:
-        try:
-            text = []
-            for i in range(len(music_title)):
-                text.append('' + "\n" + str(i + 1) + ". " + str(music_title[i]))
-            text.reverse()
-            Text = ''
-            for i in range(len(text)):
-                Text = Text + str(text[i])
-            await music_msg.edit(content = '노래 목록 \n' + Text.strip())
-        except:
-            pass
             
 
 
@@ -558,6 +541,8 @@ async def on_message(msg):
             await play(bot, msg=msg.content)
             await msg.delete()
             await musicmessage(bot)
+
+            
 
 TOKEN = os.environ['BOT_TOKEN']
 bot.run(TOKEN)

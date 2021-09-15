@@ -74,6 +74,7 @@ async def on_ready():
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
 
+
         
 
 # f_music_title 함수
@@ -477,15 +478,7 @@ async def musicmessage(ctx):
 async def on_reaction_add(reaction, user):
 
     if (reaction.emoji == '✅'):
-        try:
-            global vc
-            vc = await bot.message.author.voice.channel.connect()
-        except:
-            try:
-                await vc.move_to(bot.message.author.voice.channel)
-            except:
-                pass
-
+        await musicmessage(bot)
 
     if (reaction.emoji == '▶' ):
         try:
@@ -518,7 +511,7 @@ async def on_reaction_add(reaction, user):
                         break
             except:
                 pass
-
+            
             await musicmessage(bot)
 
     if (reaction.emoji == '⏭'):
@@ -533,7 +526,7 @@ talk = {}
 @bot.command()
 async def msgadd(ctx, msg1, msg2):
     talk[msg1] = msg2
-    await ctx.send(f'```명령어이름: {msg1}, 대답: {msg2}이 등록되었습니다.```')
+    await ctx.send(f'```명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
 
 @bot.command()
 async def msgdel(ctx, msg1):
@@ -542,7 +535,7 @@ async def msgdel(ctx, msg1):
 
 @bot.command()
 async def msglist(ctx):
-    await ctx.send(talk)
+    await ctx.send(f'```{talk}```')
 
 
 

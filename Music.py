@@ -461,10 +461,12 @@ async def musicmessage(ctx):
 
     await music_msg.edit(content = '노래 목록 \n' + Text.strip())
     
-
-    embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
-    embed_music.set_image(url=music_thumbnail[0])
-    await music_msg.edit(embed=embed_music)
+    try:
+        embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
+        embed_music.set_image(url=music_thumbnail[0])
+        await music_msg.edit(embed=embed_music)
+    except:
+        pass
         
 
     if not vc.is_playing():

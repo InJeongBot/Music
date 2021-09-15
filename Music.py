@@ -455,7 +455,7 @@ async def musicmessage(ctx):
     Text = ""
     for i in range(len(music_title)):
         Text = Text + "\n" + str(i + 1) + ". " + str(music_title[i])
-    await music_msg.edit("노래 목록" + Text.strip())
+    await music_msg.edit(content="노래 목록" + Text.strip())
     
 
     embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')

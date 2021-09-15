@@ -70,10 +70,10 @@ async def on_ready():
     print(bot.user.name)
     print('TOKEN =', TOKEN)
     print('Successly access')
-'''
+
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
-'''
+
 
         
 
@@ -133,6 +133,7 @@ def music_play(ctx):
 
 # music_play_next 함수
 def music_play_next(ctx):
+    global music_msg
     if len(music_now) - len(music_user) >= 2:
         for i in range(len(music_now) - len(music_user) - 1):
             del music_now[0]
@@ -148,6 +149,13 @@ def music_play_next(ctx):
             del music_thumbnail[0]
             
             vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
+            try:
+                embed_music_f = discord.Embed(title='인정 Music', description='')
+                embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
+                music_msg.edit(embed=embed_music_f)
+            except:
+                pass
+
 
     else:
         if not vc.is_playing():
@@ -261,7 +269,6 @@ async def play(ctx, *, msg):
         music_user.append(msg)
         result, URLTEST = f_music_title(msg)
         music_queue.append(URLTEST)
-        
         try:
             await queue(ctx)
         except:
@@ -450,16 +457,6 @@ async def musicmessage(ctx):
         Text = Text + "\n" + str(i + 1) + ". " + str(music_title[i])
     await music_msg.edit("노래 목록" + Text.strip())
     
-
-    embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
-    embed_music.set_image(url=music_thumbnail[0])
-    await music_msg.edit(embed=embed_music)
-        
-
-    if not vc.is_playing():
-        embed_music_f = discord.Embed(title='인정 Music', description='')
-        embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
-        await music_msg.edit(embed=embed_music_f)
 
     embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
     embed_music.set_image(url=music_thumbnail[0])

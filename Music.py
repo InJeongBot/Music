@@ -582,5 +582,5 @@ async def on_message(msg):
             pass
 
 
-
+TOKEN = os.environ['BOT_TOKEN']
 bot.run(TOKEN)

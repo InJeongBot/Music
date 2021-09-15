@@ -149,10 +149,16 @@ def music_play_next(ctx):
             del music_thumbnail[0]
             
             vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
+
             try:
                 embed_music_f = discord.Embed(title='인정 Music', description='')
                 embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
                 music_msg.edit(embed=embed_music_f)
+            except:
+                pass
+
+            try:
+                musicmessage(ctx)
             except:
                 pass
 
@@ -523,23 +529,47 @@ async def on_reaction_add(reaction, user):
             await musicmessage(bot)
             
 
+target_dic = {}
 talk = {}
+@bot.command()
+async def 타겟메세지생성(ctx, target, msg1, *, msg2):
+    dic = {}
+    dic[msg1] = msg2
+    target = target[3:len(target)-1]
+    target_dic[int(target)] = dic
+    await ctx.send(f'```타켓: {target}, 명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
 
 @bot.command()
-async def msgadd(ctx, msg1, *, msg2):
+async def 타겟메세지삭제(ctx, target, msg1):
+    target = target[3:len(target)-1]
+    del target_dic[int(target)][msg1]
+    await ctx.send(f'```타켓: {target}, 명령어이름: {msg1} 이)가 삭제되었습니다.```')
+
+@bot.command()
+async def 타겟메세지리스트(ctx, *, msg=True):
+    await ctx.send(f'```{target_dic}```')
+
+    
+
+@bot.command()
+async def 메세지생성(ctx, msg1, *, msg2):
     talk[msg1] = msg2
     await ctx.send(f'```명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
 
 @bot.command()
-async def msgdel(ctx, msg1):
+async def 메세지삭제(ctx, msg1):
     del talk[msg1]
     await ctx.send(f'```명령어이름: {msg1} (이)가 삭제되었습니다.```')
 
 @bot.command()
-async def msglist(ctx):
+async def 메세지리스트(ctx):
     await ctx.send(f'```{talk}```')
 
-
+@bot.command()
+async def 로또(ctx, number=1):
+    for i in range(number):
+        lotto = random.sample(range(1,46),7)
+        await ctx.send(f'```{lotto[0:6]} + {lotto[6]}```')
 
 @bot.event
 async def on_message(msg):
@@ -558,8 +588,12 @@ async def on_message(msg):
             await musicmessage(bot)
 
         elif topic != None and '#대화' in topic:
-            if msg.content in list(talk.keys()):
-                await msg.channel.send(talk[msg.content])
+            if msg.author.id in list(target_dic.keys()):
+                await msg.channel.send(target_dic[msg.author.id][msg.content])
+            else:
+                if msg.content in list(talk.keys()):
+                    await msg.channel.send(talk[msg.content])
+            
                 
                 
 TOKEN = os.environ['BOT_TOKEN']

@@ -74,7 +74,6 @@ async def on_ready():
     if not discord.opus.is_loaded():
         discord.opus.load_opus('opus')
 
-
         
 
 # f_music_title 함수
@@ -480,10 +479,10 @@ async def on_reaction_add(reaction, user):
     if (reaction.emoji == '✅'):
         try:
             global vc
-            vc = await client.message.author.voice.channel.connect()
+            vc = await bot.message.author.voice.channel.connect()
         except:
             try:
-                await vc.move_to(client.message.author.voice.channel)
+                await vc.move_to(bot.message.author.voice.channel)
             except:
                 pass
 
@@ -534,11 +533,17 @@ talk = {}
 @bot.command()
 async def msgadd(ctx, msg1, msg2):
     talk[msg1] = msg2
-    await ctx.send("정상적으로 등록되었습니다.")
+    await ctx.send(f'```명령어이름: {msg1}, 대답: {msg2}이 등록되었습니다.```')
+
+@bot.command()
+async def msgadd(ctx, msg1):
+    talk[msg1]
+    await ctx.send(f'```명령어이름: {msg1} (이)가 삭제되었습니다.```')
 
 @bot.command()
 async def msglist(ctx):
     await ctx.send(talk)
+
 
 
 @bot.event
@@ -560,7 +565,7 @@ async def on_message(msg):
         elif topic != None and '#대화' in topic:
             if msg.content in list(talk.keys()):
                 await msg.channel.send(talk[msg.content])
-            
-
+                
+                
 TOKEN = os.environ['BOT_TOKEN']
 bot.run(TOKEN)

@@ -558,28 +558,29 @@ async def on_message(msg):
 
     if msg.content[:1] == command_prefix:
         await bot.process_commands(msg)
+        if topic != None and '#인정_Music' in topic:
+            msg.delete()
+        elif topic != None and '#대화' in topic:
+            msg.delete()
 
+    else:
+        if topic != None and '#인정_Music' in topic:
+            try:
+                vc = await msg.author.voice.channel.connect()
+            except:
+                pass
 
-    if topic != None and '#인정_Music' in topic:
-        try:
-            vc = await msg.author.voice.channel.connect()
-        except:
-            pass
-
-        if msg.content[:1] == command_prefix:
-            await msg.delete()
-        else:
             await play(bot, msg=msg.content)
             await msg.delete()
             await musicmessage(bot)
 
 
-    elif topic != None and '#대화' in topic:
-        if msg.author.id in list(target_dic.keys()):
-            await msg.channel.send(target_dic[msg.author.id][msg.content])
-        else:
-            if msg.content in list(talk.keys()):
-                await msg.channel.send(talk[msg.content])
+        elif topic != None and '#대화' in topic:
+            if msg.author.id in list(target_dic.keys()):
+                await msg.channel.send(target_dic[msg.author.id][msg.content])
+            else:
+                if msg.content in list(talk.keys()):
+                    await msg.channel.send(talk[msg.content])
         
             
                 

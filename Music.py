@@ -64,7 +64,7 @@ async def comfirm_server_id(ctx):
 # Event 디스코드 시작
 @bot.event
 async def on_ready():
-    await bot.change_presence(status = discord.Status.online, activity = discord.Game('안녕'))
+    await bot.change_presence(status = discord.Status.online, activity = discord.Game('XX'))
 
     print('Logging')
     print(bot.user.name)
@@ -151,13 +151,6 @@ def music_play_next(ctx):
             vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
 
             try:
-                embed_music_f = discord.Embed(title='인정 Music', description='')
-                embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
-                music_msg.edit(embed=embed_music_f)
-            except:
-                pass
-
-            try:
                 musicmessage(ctx)
             except:
                 pass
@@ -216,7 +209,7 @@ async def join(ctx):
         except:
             await ctx.send("채널에 입장해 주세요")
 
-   
+
 # Command /leave
 @bot.command()
 async def leave(ctx):
@@ -231,12 +224,9 @@ async def leave(ctx):
 async def play(ctx, *, msg):
     global vc
     try:
-        vc = await ctx.message.author.voice.channel.connect()
+        await join(ctx)
     except:
-        try:
-            await vc.move_to(ctx.message.author.voice.channel)
-        except:
-            pass
+        pass
     
     if not vc.is_playing():
 
@@ -413,7 +403,7 @@ async def stop(ctx):
 
 # 봇 전용 음악 채널 만들기
 @bot.command(pass_context = True)
-async def 음악메세지생성(ctx):
+async def 음메생성(ctx):
     global music_msg
 
     embed = discord.Embed(title='인정 Music', description='')
@@ -421,7 +411,7 @@ async def 음악메세지생성(ctx):
                                    
     music_msg = await ctx.send('노래 목록 \n', embed=embed)
 
-    music_reaction_list = ['✅','▶','⏸','⏹','⏭','']
+    music_reaction_list = ['✅','▶','⏸','⏹','⏭','🔵','🔴']
     for n in music_reaction_list:
         await music_msg.add_reaction(n)
 
@@ -455,8 +445,18 @@ async def musicmessage(ctx):
 
 # 봇 전용 음악 채널 버튼 만들기
 @bot.event
-async def on_reaction_add(reaction, user):
-
+async def on_reaction_add(reaction, ctx):
+    global vc
+    if (reaction.emoji == '🔵'):
+        try:
+            vc = await ctx.voice.channel.connect()
+        except:
+            pass
+    if (reaction.emoji == '🔴'):
+        try:
+            client.loop.create_task(vc.disconnect())
+        except:
+            pass
     if (reaction.emoji == '✅'):
         await musicmessage(bot)
 
@@ -492,12 +492,15 @@ async def on_reaction_add(reaction, user):
             except:
                 pass
             
+            time.sleep(0.01)
             await musicmessage(bot)
 
     if (reaction.emoji == '⏭'):
         if vc.is_playing():
             if len(music_user) >= 1:
                 vc.stop()
+
+            time.sleep(0.01)    
             await musicmessage(bot)
             
 
@@ -543,8 +546,11 @@ async def 로또(ctx, number=1):
         lotto = random.sample(range(1,46),6)
         await ctx.send(f'```{lotto}```')
 
+
+
 @bot.event
 async def on_message(msg):
+    global vc
     topic = msg.channel.topic
 
     if msg.author.id == 887582865762689035:
@@ -553,18 +559,29 @@ async def on_message(msg):
     if msg.content[:1] == command_prefix:
         await bot.process_commands(msg)
 
-    else:
-        if topic != None and '#인정_Music' in topic:
-            await play(bot, msg=msg.content)
-            await msg.delete()
-            await musicmessage(bot)
 
-        elif topic != None and '#대화' in topic:
-            if msg.author.id in list(target_dic.keys()):
-                await msg.channel.send(target_dic[msg.author.id][msg.content])
-            else:
-                if msg.content in list(talk.keys()):
-                    await msg.channel.send(talk[msg.content])
+    if topic != None and '#인정_Music' in topic:
+        try:
+            vc = await msg.author.voice.channel.connect()
+        except:
+            pass
+
+        if msg.content[:1] == command_prefix:
+            await msg.delete()
+
+
+        await play(bot, msg=msg.content)
+        await msg.delete()
+        await musicmessage(bot)
+
+
+    elif topic != None and '#대화' in topic:
+        if msg.author.id in list(target_dic.keys()):
+            await msg.channel.send(target_dic[msg.author.id][msg.content])
+        else:
+            if msg.content in list(talk.keys()):
+                await msg.channel.send(talk[msg.content])
+        
             
                 
                 

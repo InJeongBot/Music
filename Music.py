@@ -403,7 +403,7 @@ async def stop(ctx):
 
 # 봇 전용 음악 채널 만들기
 @bot.command(pass_context = True)
-async def 음악메세지성(ctx):
+async def 음악메세지생성(ctx):
     global music_msg
 
     embed = discord.Embed(title='인정 Music', description='')
@@ -568,11 +568,10 @@ async def on_message(msg):
 
         if msg.content[:1] == command_prefix:
             await msg.delete()
-
-
-        await play(bot, msg=msg.content)
-        await msg.delete()
-        await musicmessage(bot)
+        else:
+            await play(bot, msg=msg.content)
+            await msg.delete()
+            await musicmessage(bot)
 
 
     elif topic != None and '#대화' in topic:

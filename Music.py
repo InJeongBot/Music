@@ -403,7 +403,7 @@ async def stop(ctx):
 
 # 봇 전용 음악 채널 만들기
 @bot.command(pass_context = True)
-async def 음메생성(ctx):
+async def 음악메세지성(ctx):
     global music_msg
 
     embed = discord.Embed(title='인정 Music', description='')

@@ -566,12 +566,6 @@ async def on_message(msg):
 
     else:
         if topic != None and '#인정_Music' in topic:
-            if mume:
-                try:
-                    await 음악메세지생성(bot)
-                except:
-                    pass
-                mume = False
             try:
                 vc = await msg.author.voice.channel.connect()
             except:

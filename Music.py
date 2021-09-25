@@ -547,10 +547,11 @@ async def 로또(ctx, number=1):
         await ctx.send(f'```{lotto}```')
 
 
-
+mume = True
 @bot.event
 async def on_message(msg):
     global vc
+    global mume
     topic = msg.channel.topic
 
     if msg.author.id == 887582865762689035:
@@ -565,6 +566,12 @@ async def on_message(msg):
 
     else:
         if topic != None and '#인정_Music' in topic:
+            if mume:
+                try:
+                    await 음악메세지생성(bot)
+                except:
+                    pass
+                mume = False
             try:
                 vc = await msg.author.voice.channel.connect()
             except:

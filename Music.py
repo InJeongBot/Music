@@ -133,7 +133,7 @@ def music_play(ctx):
     
     if not vc.is_playing():
         vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx)) 
-
+        
 # music_play_next 함수
 def music_play_next(ctx):
     global music_msg
@@ -260,11 +260,16 @@ async def play(ctx, *, msg):
         driver = load_chrome_driver()
         if "https" in msg:
             driver.get(msg)
+            print("msg =", msg)
         else:
             driver.get("https://www.youtube.com/results?search_query="+msg)
+            print("msg =", msg)
         source = driver.page_source
+        print("source =", source)
         bs = bs4.BeautifulSoup(source, 'lxml')
+        print("bs =", bs)
         entire = bs.find_all('a', {'id': 'video-title'})
+        print("entire =", entire)
         entireNum = entire[0]
         entireText = entireNum.text.strip()
         musicurl = entireNum.get('href')

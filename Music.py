@@ -567,10 +567,12 @@ async def on_message(msg):
                 vc = await msg.author.voice.channel.connect()
             except:
                 pass
-
+            
+            '''
             if "https://www.youtube.com/watch?v=" in msg.content:
                 msg.content = msg.content[32:]
-
+            '''
+            
             await play(bot, msg=msg.content)
 
             await msg.delete()

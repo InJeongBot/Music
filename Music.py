@@ -88,7 +88,10 @@ def f_music_title(msg):
     options.add_argument("headless")
     
     driver = load_chrome_driver()
-    driver.get("https://www.youtube.com/results?search_query="+msg)
+    if "https://" in msg:
+        driver.get(msg)
+    else:
+        driver.get("https://www.youtube.com/results?search_query="+msg)
     source = driver.page_source
     bs = bs4.BeautifulSoup(source, 'lxml')
     entire = bs.find_all('a', {'id': 'video-title'})

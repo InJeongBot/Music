@@ -88,10 +88,7 @@ def f_music_title(msg):
     options.add_argument("headless")
     
     driver = load_chrome_driver()
-    if "https" in msg:
-        driver.get(msg)
-    else:
-        driver.get("https://www.youtube.com/results?search_query="+msg)
+    driver.get("https://www.youtube.com/results?search_query="+msg)
     source = driver.page_source
     bs = bs4.BeautifulSoup(source, 'lxml')
     entire = bs.find_all('a', {'id': 'video-title'})
@@ -133,7 +130,7 @@ def music_play(ctx):
     
     if not vc.is_playing():
         vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx)) 
-        
+
 # music_play_next 함수
 def music_play_next(ctx):
     global music_msg
@@ -234,7 +231,10 @@ async def URLplay(ctx, *, url):
         URL = info['formats'][0]['url']
         vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
     else:
-        pass
+        with YoutubeDL(YDL_OPTIONS) as ydl:
+            info = ydl.extract_info(url, download=False)
+        URL = info['formats'][0]['url']
+        vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
         #music_user.append(msg)
         #result, URLTEST = f_music_title(msg)
         #music_queue.append(URLTEST)
@@ -258,18 +258,10 @@ async def play(ctx, *, msg):
         FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         
         driver = load_chrome_driver()
-        if "https" in msg:
-            driver.get(msg)
-            print("msg =", msg)
-        else:
-            driver.get("https://www.youtube.com/results?search_query="+msg)
-            print("msg =", msg)
+        driver.get("https://www.youtube.com/results?search_query="+msg)
         source = driver.page_source
-        print("source =", source)
         bs = bs4.BeautifulSoup(source, 'lxml')
-        print("bs =", bs)
         entire = bs.find_all('a', {'id': 'video-title'})
-        print("entire =", entire)
         entireNum = entire[0]
         entireText = entireNum.text.strip()
         musicurl = entireNum.get('href')
@@ -575,6 +567,9 @@ async def on_message(msg):
                 vc = await msg.author.voice.channel.connect()
             except:
                 pass
+
+            if "https://www.youtube.com/watch?v=" in msg.content:
+                msg.content = msg.content[32:]
 
             await play(bot, msg=msg.content)
 

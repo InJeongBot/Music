@@ -88,18 +88,13 @@ def f_music_title(msg):
     options.add_argument("headless")
     
     driver = load_chrome_driver()
-    if "https://" in msg:
+    if "https" in msg:
         driver.get(msg)
-        print("URL:", msg)
     else:
         driver.get("https://www.youtube.com/results?search_query="+msg)
-        print("msg:", msg)
     source = driver.page_source
-    print("source:", source)
     bs = bs4.BeautifulSoup(source, 'lxml')
-    print("bs:", bs)
     entire = bs.find_all('a', {'id': 'video-title'})
-    print("entire:", entire)
     entireNum = entire[0]
     music = entireNum.text.strip()
     
@@ -227,6 +222,23 @@ async def leave(ctx):
         await ctx.send("인정봇이 음성 채널에 들어가 있지 않네요")
 
 
+# Command /URLplay url
+@bot.command()
+async def URLplay(ctx, *, url):
+    YDL_OPTIONS = {'format': 'bestaudio','noplaylist':'True'}
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+
+    if not vc.is_playing():
+        with YoutubeDL(YDL_OPTIONS) as ydl:
+            info = ydl.extract_info(url, download=False)
+        URL = info['formats'][0]['url']
+        vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
+    else:
+        pass
+        #music_user.append(msg)
+        #result, URLTEST = f_music_title(msg)
+        #music_queue.append(URLTEST)
+
 # Command /play 노래제목
 @bot.command()
 async def play(ctx, *, msg):
@@ -246,7 +258,7 @@ async def play(ctx, *, msg):
         FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         
         driver = load_chrome_driver()
-        if msg[:5] in "https://www.youtube.com/results?search_query=":
+        if "https" in msg:
             driver.get(msg)
         else:
             driver.get("https://www.youtube.com/results?search_query="+msg)
@@ -276,17 +288,7 @@ async def play(ctx, *, msg):
         music_user.append(msg)
         result, URLTEST = f_music_title(msg)
         music_queue.append(URLTEST)
-        try:
-            await queue(ctx)
-        except:
-            pass
 
-    try:
-        embed = discord.Embed(title = entireText, description = "")
-        embed.set_image(url = thumbnail)
-        await ctx.send(embed=embed)
-    except:
-        pass
 
 # Command /queuedel (숫자)
 @bot.command()
@@ -455,16 +457,7 @@ async def musicmessage(ctx):
 @bot.event
 async def on_reaction_add(reaction, ctx):
     global vc
-    if (reaction.emoji == '🔵'):
-        try:
-            vc = await ctx.voice.channel.connect()
-        except:
-            pass
-    if (reaction.emoji == '🔴'):
-        try:
-            client.loop.create_task(vc.disconnect())
-        except:
-            pass
+
     if (reaction.emoji == '✅'):
         await musicmessage(bot)
 
@@ -513,13 +506,13 @@ async def on_reaction_add(reaction, ctx):
             
 
 target_dic = {}
-talk = {'하앙': '하앍', '루이야오늘괜찮아?': '오빠 오늘 안전한 날이야', '루이야처음이야?': '아니 그날 너랑한게 처음이야..', '루이야안전한날이야?': '전 언제든지 안전해요', '루이야': '뭐 씹덕아;;', '날경멸해줘': '오타쿠 같은 새끼', '으흣..!': '죽어버렷!!', '루이야좋아해': '그럼 언니는 어쩌고', '그치만니가더좋아': '으흣..나도널좋아해', '루이야..날매도해줘': '바보..! 변태..! 치한..!', '루이야좋아?': '으..응 으흣!!!', '어때좋았어?': '응 니가 제일잘해', '밟아줘': '어때 좋냐?', '루이야오늘어때?': '나 오늘 그날이야..', '그럼이제두번째네?': '응.. 맞아..'}
+talk = {}
 @bot.command()
 async def 타겟메세지생성(ctx, target, msg1, *, msg2):
-    dic = {}
-    dic[msg1] = msg2
     target = target[3:len(target)-1]
-    target_dic[int(target)] = dic
+    if not int(target) in list(target_dic.keys()):
+        target_dic[int(target)] = {}
+    target_dic[int(target)][msg1] = msg2
     await ctx.send(f'```타겟: {target}, 명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
 
 @bot.command()
@@ -555,11 +548,10 @@ async def 로또(ctx, number=1):
         await ctx.send(f'```{lotto}```')
 
 
-mume = True
+
 @bot.event
 async def on_message(msg):
     global vc
-    global mume
     topic = msg.channel.topic
 
     if msg.author.id == 887582865762689035:
@@ -580,6 +572,7 @@ async def on_message(msg):
                 pass
 
             await play(bot, msg=msg.content)
+
             await msg.delete()
             await musicmessage(bot)
 

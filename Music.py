@@ -80,34 +80,23 @@ async def on_ready():
 # f_music_title 함수
 def f_music_title(msg):
     global Text
+
+    YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("headless")
+
+    driver = load_chrome_driver()
+
     try:
-        YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
-        FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-
-        options = webdriver.ChromeOptions()
-        options.add_argument("headless")
-
-        driver = load_chrome_driver()
         driver.get("https://www.youtube.com/results?search_query="+msg)
         source = driver.page_source
         bs = bs4.BeautifulSoup(source, 'lxml')
         entire = bs.find_all('a', {'id': 'video-title'})
         entireNum = entire[0]
-        music = entireNum.text.strip()
-
-        music_title.append(music)
-        music_now.append(music)
-        test1 = entireNum.get('href')
-        url = 'https://www.youtube.com'+test1
         
     except:
-        YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
-        FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-
-        options = webdriver.ChromeOptions()
-        options.add_argument("headless")
-
-        driver = load_chrome_driver()
         if "https://www.youtube.com/watch?v=" in msg:
             msg = msg[32:]
         elif "https://youtu.be/" in msg:
@@ -117,12 +106,13 @@ def f_music_title(msg):
         bs = bs4.BeautifulSoup(source, 'lxml')
         entire = bs.find_all('a', {'id': 'video-title'})
         entireNum = entire[0]
-        music = entireNum.text.strip()
 
-        music_title.append(music)
-        music_now.append(music)
-        test1 = entireNum.get('href')
-        url = 'https://www.youtube.com'+test1
+    music = entireNum.text.strip()
+
+    music_title.append(music)
+    music_now.append(music)
+    test1 = entireNum.get('href')
+    url = 'https://www.youtube.com'+test1
         
     #썸네일
     test1_video_number = test1[9:]
@@ -132,8 +122,6 @@ def f_music_title(msg):
     with YoutubeDL(YDL_OPTIONS) as ydl:
             info = ydl.extract_info(url, download=False)
     URL = info['formats'][0]['url']
-
-    driver.quit()
 
     
     return music, URL
@@ -274,40 +262,25 @@ async def play(ctx, *, msg):
         pass
     
     if not vc.is_playing():
-        
+        global entireText
+        options = webdriver.ChromeOptions()
+        options.add_argument("headless")
+
+
+        YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
+        FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+
+        driver = load_chrome_driver()
+
         try:
-            options = webdriver.ChromeOptions()
-            options.add_argument("headless")
-
-            global entireText
-            YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
-            FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-
-            driver = load_chrome_driver()
             driver.get("https://www.youtube.com/results?search_query="+msg)
             source = driver.page_source
             bs = bs4.BeautifulSoup(source, 'lxml')
             entire = bs.find_all('a', {'id': 'video-title'})
             entireNum = entire[0]
-            entireText = entireNum.text.strip()
-            musicurl = entireNum.get('href')
-            url = 'https://www.youtube.com'+musicurl
 
-            video_number = musicurl[9:]
-            image_type = '0'
-            thumbnail = 'http://img.youtube.com/vi/'+ video_number +'/'+ image_type +'.jpg'
-
-            driver.quit()
             
         except:
-            options = webdriver.ChromeOptions()
-            options.add_argument("headless")
-
-            global entireText
-            YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
-            FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-
-            driver = load_chrome_driver()
             if "https://www.youtube.com/watch?v=" in msg:
                 msg = msg[32:]
             elif "https://youtu.be/" in msg:
@@ -317,15 +290,15 @@ async def play(ctx, *, msg):
             bs = bs4.BeautifulSoup(source, 'lxml')
             entire = bs.find_all('a', {'id': 'video-title'})
             entireNum = entire[0]
-            entireText = entireNum.text.strip()
-            musicurl = entireNum.get('href')
-            url = 'https://www.youtube.com'+musicurl
 
-            video_number = musicurl[9:]
-            image_type = '0'
-            thumbnail = 'http://img.youtube.com/vi/'+ video_number +'/'+ image_type +'.jpg'
+        entireText = entireNum.text.strip()
+        musicurl = entireNum.get('href')
+        url = 'https://www.youtube.com'+musicurl
 
-            driver.quit()
+        video_number = musicurl[9:]
+        image_type = '0'
+        thumbnail = 'http://img.youtube.com/vi/'+ video_number +'/'+ image_type +'.jpg'
+
             
         music_now.insert(0, entireText)
         music_thumbnail.insert(0, thumbnail)

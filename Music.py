@@ -90,11 +90,16 @@ def f_music_title(msg):
     driver = load_chrome_driver()
     if "https://" in msg:
         driver.get(msg)
+        print("URL:", msg)
     else:
         driver.get("https://www.youtube.com/results?search_query="+msg)
+        print("msg:", msg)
     source = driver.page_source
+    print("source:", source)
     bs = bs4.BeautifulSoup(source, 'lxml')
+    print("bs:", bs)
     entire = bs.find_all('a', {'id': 'video-title'})
+    print("entire:", entire)
     entireNum = entire[0]
     music = entireNum.text.strip()
     

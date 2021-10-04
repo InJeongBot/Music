@@ -599,7 +599,10 @@ async def on_message(msg):
             await play(bot, msg=msg.content)
 
             await msg.delete()
-            await musicmessage(bot)
+            try:
+                await musicmessage(bot)
+            except:
+                pass
 
 
         elif topic != None and '#대화' in topic:

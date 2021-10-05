@@ -557,8 +557,13 @@ async def on_message(msg):
             except:
                 pass
             
-            
-            await play(bot, msg=msg.content)
+           try:
+                await play(bot, msg=msg.content)
+            except:
+                if "https" in msg.content:
+                    await msg.channel.send("접근할 수 없는 url입니다.")
+                else:
+                    await msg.channel.send("접근할 수 없는 노래입니다.")
 
             await msg.delete()
             await musicmessage(bot)

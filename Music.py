@@ -85,6 +85,8 @@ async def f_music_title(ctx, msg):
     music_now.append(music)
     test1 = entireNum.get('href')
     url = 'https://www.youtube.com'+test1
+    
+    driver.quit()
         
     #썸네일
     test1_video_number = test1[9:]
@@ -268,7 +270,9 @@ async def play(ctx, *, msg):
         entireText = entireNum.text.strip()
         musicurl = entireNum.get('href')
         url = 'https://www.youtube.com'+musicurl
-
+        
+        driver.quit()
+        
         video_number = musicurl[9:]
         image_type = '0'
         thumbnail = 'http://img.youtube.com/vi/'+ video_number +'/'+ image_type +'.jpg'

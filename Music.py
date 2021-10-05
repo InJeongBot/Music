@@ -117,7 +117,7 @@ async def music_play(ctx):
     vc = get(bot.voice_clients, guild = ctx.guild)
     
     if not vc.is_playing():
-        vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx)) 
+        vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: await music_play_next(ctx)) 
 
 # music_play_next 함수
 @bot.command()
@@ -284,7 +284,7 @@ async def play(ctx, *, msg):
             info = ydl.extract_info(url, download=False)
         URL = info['formats'][0]['url']
         
-        vc.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
+        vc.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: await music_play_next(ctx))
 
     else:
         music_user.append(msg)

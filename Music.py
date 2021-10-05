@@ -137,7 +137,7 @@ async def music_play_next(ctx):
             del music_queue[0]
             del music_thumbnail[0]
             
-            vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: await music_play_next(ctx))
+            vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
 
             try:
                 await musicmessage(bot)
@@ -284,7 +284,7 @@ async def play(ctx, *, msg):
             info = ydl.extract_info(url, download=False)
         URL = info['formats'][0]['url']
         
-        vc.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: await music_play_next(ctx))
+        vc.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
 
     else:
         music_user.append(msg)

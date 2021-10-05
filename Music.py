@@ -30,35 +30,6 @@ music_queue = []
 music_now = []
 music_thumbnail = []
 
-music_var = [ music_user, music_title, music_queue, music_now, music_thumbnail ]
-discord_server_id = []
-discord_server_name = []
-server_id = 0
-music_var_num = 0
-
-# Command /comfirm_server_id
-@bot.command()
-async def comfirm_server_id(ctx):
-    global server_id
-    global music_var_num
-    if server_id != ctx.guild.id:
-        while True:
-            if ctx.guild.id in discord_server_id:
-                server_id = ctx.guild.id
-                for i in range(len(discord_server_id)):
-                    if ctx.guild.id == discord_server_id[i]:
-                        music_var_num = i
-                        break
-            else:
-                discord_server_id.append(ctx.guild.id)
-                discord_server_name.append(ctx.guild.name)
-                continue
-            break
-        print(discord_server_name)
-        print(discord_server_id)
-        print(discord_server_name[music_var_num], discord_server_id[music_var_num])
-        print(server_id)
-        print(music_var_num)
 
 
 # Event 디스코드 시작
@@ -535,27 +506,9 @@ async def on_reaction_add(reaction, ctx):
             await musicmessage(bot)
             
 
-target_dic = {}
-talk = {}
-@bot.command()
-async def 타겟메세지생성(ctx, target, msg1, *, msg2):
-    target = target[3:len(target)-1]
-    if not int(target) in list(target_dic.keys()):
-        target_dic[int(target)] = {}
-    target_dic[int(target)][msg1] = msg2
-    await ctx.send(f'```타겟: {target}, 명령어이름: {msg1}, 대답: {msg2} (이)가 등록되었습니다.```')
 
-@bot.command()
-async def 타겟메세지삭제(ctx, target, msg1):
-    target = target[3:len(target)-1]
-    del target_dic[int(target)][msg1]
-    await ctx.send(f'```타겟: {target}, 명령어이름: {msg1} 이)가 삭제되었습니다.```')
+talk = {'하앙': '하앍', '루이야오늘괜찮아?': '오빠 오늘 안전한 날이야', '루이야': '뭐 씹덕아;;', '날경멸해줘': '오타쿠 같은 새끼 죽어', '으흣..!': '죽어버렷!!', '루이야좋아해': '그럼 언니는 어쩌고..', '그치만니가더좋아': '으흣..나도널좋아해', '루이야..날매도해줘': '바보..! 변태..! 치한..!', '루이야좋아?': '으..응 으흣!!!', '어때좋았어?': '응 니가 제일 잘해', '루이야처음이야?': '아니 그날 너랑한게 처음이야..', '그럼이제두번째네?': '응.. 맞아..', '루이야오늘어때?': '나 오늘 그날이야'}
 
-@bot.command()
-async def 타겟메세지리스트(ctx, *, msg=True):
-    await ctx.send(f'```{target_dic}```')
-
-    
 
 @bot.command()
 async def 메세지생성(ctx, msg1, *, msg2):
@@ -589,10 +542,6 @@ async def on_message(msg):
 
     if msg.content[:1] == command_prefix:
         await bot.process_commands(msg)
-        if topic != None and '#인정_Music' in topic:
-            msg.delete()
-        elif topic != None and '#대화' in topic:
-            msg.delete()
 
     else:
         if topic != None and '#인정_Music' in topic:
@@ -609,11 +558,8 @@ async def on_message(msg):
 
 
         elif topic != None and '#대화' in topic:
-            if msg.author.id in list(target_dic.keys()):
-                await msg.channel.send(target_dic[msg.author.id][msg.content])
-            else:
-                if msg.content in list(talk.keys()):
-                    await msg.channel.send(talk[msg.content])
+            if msg.content in list(talk.keys()):
+                await msg.channel.send(talk[msg.content])
         
             
                 

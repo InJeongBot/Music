@@ -49,8 +49,7 @@ async def on_ready():
         
 
 # f_music_title 함수
-@bot.command()
-async def f_music_title(ctx, msg):
+def f_music_title(msg):
     global Text
 
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
@@ -87,7 +86,7 @@ async def f_music_title(ctx, msg):
     url = 'https://www.youtube.com'+test1
     
     driver.quit()
-        
+    
     #썸네일
     test1_video_number = test1[9:]
     test1_thumbnail = 'http://img.youtube.com/vi/'+ test1_video_number +'/0.jpg'
@@ -101,8 +100,7 @@ async def f_music_title(ctx, msg):
     return music, URL
 
 # music_play 함수
-@bot.command()
-async def music_play(ctx):
+def music_play(ctx):
     global vc
     
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
@@ -120,8 +118,7 @@ async def music_play(ctx):
         vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx)) 
 
 # music_play_next 함수
-@bot.command()
-async def music_play_next(ctx):
+def music_play_next(ctx):
     global music_msg
     if len(music_now) - len(music_user) >= 2:
         for i in range(len(music_now) - len(music_user) - 1):
@@ -140,7 +137,7 @@ async def music_play_next(ctx):
             vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
 
             try:
-                await musicmessage(bot)
+                musicmessage(bot)
             except:
                 pass
 
@@ -270,9 +267,9 @@ async def play(ctx, *, msg):
         entireText = entireNum.text.strip()
         musicurl = entireNum.get('href')
         url = 'https://www.youtube.com'+musicurl
-        
+
         driver.quit()
-        
+
         video_number = musicurl[9:]
         image_type = '0'
         thumbnail = 'http://img.youtube.com/vi/'+ video_number +'/'+ image_type +'.jpg'
@@ -288,7 +285,7 @@ async def play(ctx, *, msg):
 
     else:
         music_user.append(msg)
-        result, URLTEST = await f_music_title(ctx, msg)
+        result, URLTEST = f_music_title(msg)
         music_queue.append(URLTEST)
 
 
@@ -514,7 +511,7 @@ async def on_reaction_add(reaction, ctx):
             
 
 
-talk = {'하앙': '하앍', '루이야오늘괜찮아?': '오빠 오늘 안전한 날이야', '루이야': '뭐 씹덕아;;', '날경멸해줘': '오타쿠 같은 새끼 죽어', '으흣..!': '죽어버렷!!', '루이야좋아해': '그럼 언니는 어쩌고..', '그치만니가더좋아': '으흣..나도널좋아해', '루이야..날매도해줘': '바보..! 변태..! 치한..!', '루이야좋아?': '으..응 으흣!!!', '어때좋았어?': '응 니가 제일 잘해', '루이야처음이야?': '아니 그날 너랑한게 처음이야..', '그럼이제두번째네?': '응.. 맞아..', '루이야오늘어때?': '나 오늘 그날이야'}
+talk = {}
 
 
 @bot.command()
@@ -567,7 +564,6 @@ async def on_message(msg):
         elif topic != None and '#대화' in topic:
             if msg.content in list(talk.keys()):
                 await msg.channel.send(talk[msg.content])
-        
             
                 
                 

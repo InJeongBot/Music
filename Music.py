@@ -557,7 +557,7 @@ async def on_message(msg):
             except:
                 pass
             
-           try:
+            try:
                 await play(bot, msg=msg.content)
             except:
                 if "https" in msg.content:

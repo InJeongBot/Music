@@ -454,10 +454,13 @@ async def musicmessage(ctx):
             await music_msg.edit(embed=embed_music_f)
 
     except:
-        embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
-        embed_music.set_image(url=music_thumbnail[0])
-        await ctx.send(embed=embed_music)
-
+        try:
+            embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
+            embed_music.set_image(url=music_thumbnail[0])
+            await ctx.send(embed=embed_music)
+        except:
+            pass
+        
 # 봇 전용 음악 채널 버튼 만들기
 @bot.event
 async def on_reaction_add(reaction, ctx):

@@ -102,7 +102,7 @@ async def f_music_title(ctx, msg):
 
 # music_play 함수
 @bot.command()
-async music_play(ctx):
+async def music_play(ctx):
     global vc
     
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
@@ -121,7 +121,7 @@ async music_play(ctx):
 
 # music_play_next 함수
 @bot.command()
-async music_play_next(ctx):
+async def music_play_next(ctx):
     global music_msg
     if len(music_now) - len(music_user) >= 2:
         for i in range(len(music_now) - len(music_user) - 1):

@@ -288,7 +288,7 @@ async def play(ctx, *, msg):
 
     else:
         music_user.append(msg)
-        result, URLTEST = await f_music_title(msg)
+        result, URLTEST = await f_music_title(ctx, msg)
         music_queue.append(URLTEST)
 
 

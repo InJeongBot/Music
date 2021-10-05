@@ -49,7 +49,8 @@ async def on_ready():
         
 
 # f_music_title 함수
-def f_music_title(msg):
+@bot.command()
+async def f_music_title(ctx, msg):
     global Text
 
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
@@ -98,7 +99,8 @@ def f_music_title(msg):
     return music, URL
 
 # music_play 함수
-def music_play(ctx):
+@bot.command()
+async music_play(ctx):
     global vc
     
     YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
@@ -116,7 +118,8 @@ def music_play(ctx):
         vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx)) 
 
 # music_play_next 함수
-def music_play_next(ctx):
+@bot.command()
+async music_play_next(ctx):
     global music_msg
     if len(music_now) - len(music_user) >= 2:
         for i in range(len(music_now) - len(music_user) - 1):

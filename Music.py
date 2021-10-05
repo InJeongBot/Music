@@ -137,10 +137,10 @@ async def music_play_next(ctx):
             del music_queue[0]
             del music_thumbnail[0]
             
-            vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
+            vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: await music_play_next(ctx))
 
             try:
-                musicmessage(bot)
+                await musicmessage(bot)
             except:
                 pass
 
@@ -288,7 +288,7 @@ async def play(ctx, *, msg):
 
     else:
         music_user.append(msg)
-        result, URLTEST = f_music_title(msg)
+        result, URLTEST = await f_music_title(msg)
         music_queue.append(URLTEST)
 
 

@@ -164,7 +164,7 @@ def music_play_next(ctx):
             vc.play(discord.FFmpegPCMAudio(URL,**FFMPEG_OPTIONS), after=lambda e: music_play_next(ctx))
 
             try:
-                musicmessage(ctx)
+                musicmessage(bot)
             except:
                 pass
 
@@ -445,14 +445,13 @@ async def 음악메세지생성(ctx):
                                    
     music_msg = await ctx.send('노래 목록 \n', embed=embed)
 
-    music_reaction_list = ['✅','▶','⏸','⏹','⏭','🔵','🔴']
+    music_reaction_list = ['✅','▶','⏸','⏹','⏭']
     for n in music_reaction_list:
         await music_msg.add_reaction(n)
 
 
 @bot.command(pass_context = True)
 async def musicmessage(ctx):
-    global music_msg
     text = []
     for i in range(len(music_title)):
         text.append('' + "\n" + str(i + 1) + ". " + str(music_title[i]))
@@ -461,21 +460,28 @@ async def musicmessage(ctx):
     for i in range(len(text)):
         Text = Text + str(text[i])
 
-    await music_msg.edit(content = '노래 목록 \n' + Text.strip())
-    
     try:
+        global music_msg
+
+        await music_msg.edit(content = '노래 목록 \n' + Text.strip())
+        
+        try:
+            embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
+            embed_music.set_image(url=music_thumbnail[0])
+            await music_msg.edit(embed=embed_music)
+        except:
+            pass
+            
+
+        if not vc.is_playing():
+            embed_music_f = discord.Embed(title='인정 Music', description='')
+            embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
+            await music_msg.edit(embed=embed_music_f)
+
+    except:
         embed_music = discord.Embed(title='인정 Music \n' + music_now[0], description='')
         embed_music.set_image(url=music_thumbnail[0])
-        await music_msg.edit(embed=embed_music)
-    except:
-        pass
-        
-
-    if not vc.is_playing():
-        embed_music_f = discord.Embed(title='인정 Music', description='')
-        embed_music_f.set_image(url='https://i.ytimg.com/vi/1SLr62VBBjw/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCbXp098HNZl_SbZ5Io5GuHd6M4CA')
-        await music_msg.edit(embed=embed_music_f)
-
+        await ctx.send(embed=embed_music)
 
 # 봇 전용 음악 채널 버튼 만들기
 @bot.event
@@ -530,7 +536,7 @@ async def on_reaction_add(reaction, ctx):
             
 
 target_dic = {}
-talk = {'하앙': '하앍', '루이야오늘괜찮아?': '오빠 오늘 안전한 날이야', '루이야': '뭐 씹덕아;;', '날경멸해줘': '오타쿠 같은 새끼', '으흣..!': '죽어버렷!!', '루이야좋아해': '그럼 언니는 어쩌고', '그치만니가더좋아': '으흣..나도널좋아해', '루이야..날매도해줘': '바보..! 변태..! 치한..!', '루이야좋아?': '으..응 으흣!!!', '어때좋았어?': '응 니가 제일잘해', '루이야처음이야?': '아니 그날 너랑한게 처음이야..', '그럼이제두번째네?': '응.. 맞아..', '루이야오늘어때?': '나 오늘 그날이야..'}
+talk = {}
 @bot.command()
 async def 타겟메세지생성(ctx, target, msg1, *, msg2):
     target = target[3:len(target)-1]
@@ -599,10 +605,7 @@ async def on_message(msg):
             await play(bot, msg=msg.content)
 
             await msg.delete()
-            try:
-                await musicmessage(bot)
-            except:
-                pass
+            await musicmessage(bot)
 
 
         elif topic != None and '#대화' in topic:

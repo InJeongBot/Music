@@ -3,7 +3,7 @@ selenium
 discord.py[voice]
 pip
 beautifulsoup4
-youtube-dl
+youtube-dl==2021.06.06
 ffmpeg-python
 requests
 urllib3
